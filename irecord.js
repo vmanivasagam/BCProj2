@@ -74,12 +74,7 @@ class IRecord extends State {
         return State.deserializeClass(data, IRecord);
     }
 
-    //  TASK-2: add additional field for instance
     static createInstance(username, name, dob, gender, blood_type, tx) {
-        // GRADED FUNCTION
-        // update this function to add new field lastcheckupDate to IRecord.
-
-
         return new IRecord({username, name, dob, gender, blood_type, tx});
     }
 

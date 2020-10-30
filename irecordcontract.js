@@ -63,9 +63,9 @@ class IRecordContract extends Contract {
     //GRADED FUNCTION
     async createIRecord(ctx,username,name,dob,gender,blood_type, base_url, address, pk, token) {
         //  TASK-1: Rewrite the function to write a OP-RETURN transaction to Dash Public Blockchain
-        //  when a patient with bloodType AB- is being inserted to the blockchain
         //  create an IRecord with username,name,dob,gender,blood_type,and transaction ID none
-        //  add IRecord to the IRecordList
+        //  If patient bloodType AB- insert record to blockchain using
+        //  addIRecord of IRecordList
         //  Fetch the transactions for the address {address:base_url,address,token}
         //  Compute the total amount of all the raw transactions fetched.
         //  If the total amount  is less than amount+fee raise an error Insufficient funds
@@ -128,12 +128,13 @@ class IRecordContract extends Contract {
 
             try {
                 jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-                // GRADED FUNCTION
-                //  TASK-3: When going through records that the function is returning we need to check if this record has a TX field
-                //  IF YES - we call https://www.chainrider.io/docs/dash/#transaction-by-hash API to return a JSON of that transaction
-                //  From the transaction we take out the OP-RETURN data and append it to the record as jsonRes.Record['tx_decoded']
-                if (jsonRes.Record['tx']!=='None'){
 
+                if (jsonRes.Record['tx']!=='None'){
+                    // GRADED FUNCTION
+                    //  TASK-2: When iterating through records that the function is returning check if this record has a TX field
+                    //  IF YES - we call https://www.chainrider.io/docs/dash/#transaction-by-hash API to return a JSON of that transaction
+                    //  From the transaction get OP-RETURN data
+                    //  Convert the hex value of OP-ReturnData to ASCII and append it to the record as jsonRes.Record['tx_decoded']
                 }
             } catch (err) {
                 console.log(err);
