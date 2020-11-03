@@ -31,8 +31,8 @@ class PRecordContext extends Context {
 class Precordcontract extends Contract {
 
     constructor() {
-        super('org.asu.irecordcontract');
-    }
+        super('org.asu.precordcontract');
+    }11
 
     /**
      * Define a custom context for commercial paper
@@ -61,11 +61,11 @@ class Precordcontract extends Contract {
      * @param {String} blood_type blood type
      */
     //GRADED FUNCTION
-    async createIRecord(ctx,username,name,dob,gender,blood_type, base_url, address, pk, token) {
+    async createPRecord(ctx, username, name, dob, gender, blood_type, base_url, address, pk, token) {
         //  TASK-1: Rewrite the function to write a OP-RETURN transaction to Dash Public Blockchain
         //  create an PRecord with username,name,dob,gender,blood_type,and transaction ID none
         //  If patient bloodType AB- insert record to blockchain using
-        //  addIRecord of PRecordList
+        //  addPRecord of PRecordList
         //  Fetch the transactions for the address {address:base_url,address,token}
         //  Compute the total amount of all the raw transactions fetched.
         //  If the total amount  is less than amount+fee raise an error Insufficient funds

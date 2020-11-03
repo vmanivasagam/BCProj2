@@ -79,7 +79,7 @@ class Precord extends State {
     }
 
     static getClass() {
-        return 'org.asu.irecord';
+        return 'org.asu.precord';
     }
 
 
