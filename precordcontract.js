@@ -8,18 +8,18 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 // Fabric smart contract classes
 const { Contract, Context } = require('fabric-contract-api');
-const IRecord = require('./precord.js');
-const IRecordList = require('./precordlist.js');
+const PRecord = require('./precord.js');
+const PRecordList = require('./precordlist.js');
 let dashcore = require('@dashevo/dashcore-lib');
 const got = require('got');
 /**
  * A custom context provides easy access to list of all commercial papers
  */
-class IRecordContext extends Context {
+class PRecordContext extends Context {
 
     constructor() {
         super();
-        this.irecordList = new IRecordList(this);
+        this.PRecordList = new PRecordList(this);
     }
 
 }
@@ -38,7 +38,7 @@ class Precordcontract extends Contract {
      * Define a custom context for commercial paper
     */
     createContext() {
-        return new IRecordContext();
+        return new PRecordContext();
     }
 
     /**
@@ -63,23 +63,23 @@ class Precordcontract extends Contract {
     //GRADED FUNCTION
     async createIRecord(ctx,username,name,dob,gender,blood_type, base_url, address, pk, token) {
         //  TASK-1: Rewrite the function to write a OP-RETURN transaction to Dash Public Blockchain
-        //  create an IRecord with username,name,dob,gender,blood_type,and transaction ID none
+        //  create an PRecord with username,name,dob,gender,blood_type,and transaction ID none
         //  If patient bloodType AB- insert record to blockchain using
-        //  addIRecord of IRecordList
+        //  addIRecord of PRecordList
         //  Fetch the transactions for the address {address:base_url,address,token}
         //  Compute the total amount of all the raw transactions fetched.
         //  If the total amount  is less than amount+fee raise an error Insufficient funds
         //  Else if total amount  is greater than or equal  to amount+fee
         //  Create a transaction using the {dashcore} library, and send the transaction using ChainRider
         //  Send Raw Transaction API - https://www.chainrider.io/docs/dash/#send-raw-transaction
-        //  Resulting transaction ID (dashTx) is used to create an IRecord given in the following code
+        //  Resulting transaction ID (dashTx) is used to create an PRecord given in the following code
 
 
 
 
-        let irecord = IRecord.createInstance(username, name, dob, gender, blood_type, dashTx);
-        await ctx.irecordList.addIRecord(irecord);
-        return irecord.toBuffer()
+        let precord = PRecord.createInstance(username, name, dob, gender, blood_type, dashTx);
+        await ctx.PRecordList.addPRecord(precord);
+        return precord.toBuffer()
     }
 
     /**
@@ -90,13 +90,13 @@ class Precordcontract extends Contract {
      * @param {String} last_checkup_date date string 
      */
     async update_checkup_date(ctx,username,name,last_checkup_date){
-        let irecordKey = IRecord.makeKey([username,name]);
-        let irecord = await ctx.irecordList.getIRecord(irecordKey);
+        let precordKey = PRecord.makeKey([username,name]);
+        let precord = await ctx.PRecordList.getPRecord(precordKey);
 
-        irecord.set_last_checkup_date(last_checkup_date);
-        await ctx.irecordList.updateIRecord(irecord);
+        precord.set_last_checkup_date(last_checkup_date);
+        await ctx.PRecordList.updatePRecord(precord);
 
-        return irecord.toBuffer();
+        return precord.toBuffer();
 
     }
 
