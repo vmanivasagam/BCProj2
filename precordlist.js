@@ -3,9 +3,9 @@
 // Utility class for collections of ledger states --  a state list
 const StateList = require('./ledger-api/statelist.js');
 
-const IRecord = require('./irecord.js');
+const IRecord = require('./precord.js');
 
-class IRecordList extends StateList {
+class Precordlist extends StateList {
     constructor(ctx) {
         super(ctx,'org.papernet.irecordlist');
         this.use(IRecord);
@@ -26,4 +26,4 @@ class IRecordList extends StateList {
 
 }
 
-module.exports = IRecordList;
+module.exports = Precordlist;

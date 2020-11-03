@@ -1,3 +1,3 @@
 'use strict';
-const irecordcontract = require('./irecordcontract.js');
+const irecordcontract = require('./precordcontract.js');
 module.exports.contracts = [irecordcontract];

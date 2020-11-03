@@ -2,17 +2,17 @@
 
 const State = require('./ledger-api/state.js');
 
-class IRecord extends State {
+class Precord extends State {
 
     constructor(obj) {
-        super(IRecord.getClass(),[obj.username, obj.name]);
+        super(Precord.getClass(),[obj.username, obj.name]);
         Object.assign(this,obj);
     }
 
     //Helper functions for returning objects
 
     static fromBuffer(buffer) {
-        return IRecord.deserialize(Buffer.from(JSON.parse(buffer)));
+        return Precord.deserialize(Buffer.from(JSON.parse(buffer)));
     }
 
     toBuffer() {
@@ -71,11 +71,11 @@ class IRecord extends State {
      * @param {Buffer} data to form back into the object
      */
     static deserialize(data) {
-        return State.deserializeClass(data, IRecord);
+        return State.deserializeClass(data, Precord);
     }
 
     static createInstance(username, name, dob, gender, blood_type, tx) {
-        return new IRecord({username, name, dob, gender, blood_type, tx});
+        return new Precord({username, name, dob, gender, blood_type, tx});
     }
 
     static getClass() {
@@ -85,4 +85,4 @@ class IRecord extends State {
 
 }
 
-module.exports = IRecord;
+module.exports = Precord;

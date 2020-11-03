@@ -8,8 +8,8 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 // Fabric smart contract classes
 const { Contract, Context } = require('fabric-contract-api');
-const IRecord = require('./irecord.js');
-const IRecordList = require('./irecordlist.js');
+const IRecord = require('./precord.js');
+const IRecordList = require('./precordlist.js');
 let dashcore = require('@dashevo/dashcore-lib');
 const got = require('got');
 /**
@@ -28,7 +28,7 @@ class IRecordContext extends Context {
  * Define commercial paper smart contract by extending Fabric Contract class
  *
  */
-class IRecordContract extends Contract {
+class Precordcontract extends Contract {
 
     constructor() {
         super('org.asu.irecordcontract');
@@ -233,4 +233,4 @@ class IRecordContract extends Contract {
 }
 
 
-module.exports = IRecordContract;
+module.exports = Precordcontract;
