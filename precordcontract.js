@@ -32,7 +32,7 @@ class Precordcontract extends Contract {
 
     constructor() {
         super('org.asu.precordcontract');
-    }11
+    }
 
     /**
      * Define a custom context for commercial paper
