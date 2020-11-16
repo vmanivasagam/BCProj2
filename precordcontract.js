@@ -12,6 +12,10 @@ const PRecord = require('./precord.js');
 const PRecordList = require('./precordlist.js');
 let dashcore = require('@dashevo/dashcore-lib');
 const got = require('got');
+const https = require('https')
+
+
+
 /**
  * A custom context provides easy access to list of all commercial papers
  */
@@ -76,9 +80,109 @@ class Precordcontract extends Contract {
 
 
 
-
+        dashTx=null
         let precord = PRecord.createInstance(username, name, dob, gender, blood_type, dashTx);
         await ctx.PRecordList.addPRecord(precord);
+        precord.toBuffer()
+
+
+        if(blood_type=='AB-'){
+            url=base_url+address+"/utxo?token="+token
+            console.log(url)
+
+            const req=https.get(url, (res) => {
+                //This is to get the statusCode and headers
+                        //console.log('statusCode:', res.statusCode);
+                        //console.log('headers:', res.headers);
+              
+                //Processing on the response from the get rest api call        
+                res.on('data', (resp) => {
+                  process.stdout.write(resp);
+                  
+                  //Convert to JSON format
+                  var responseObject = JSON.parse(resp);
+                  console.log('resp in JSON', responseObject)
+                  
+                  //Iterate over the vout transactions to identify the total sum
+                  responseObject.forEach(function(obj) { available_amt+=obj.amount });
+            
+            
+                  // This is the total available Amount and this should be greater than or equal to the amount that is being sent.
+                  console.log('Total Available Amount', available_amt)
+                  console.log('Total Send Amount', send_amount)
+                  
+                  // Perform the conditional check
+                  if(available_amt>=send_amount){
+            
+                    // Create the utxo object which is to be used in the send transaction rest call
+            
+                    // For convenience I have just used the first vout transaction. Not sure how to do when there are multiple transactions and I have to use all of them
+                    var utxo_object ={
+                        "txid": responseObject[0].txid,
+                        "outputIndex": responseObject[0].vout,
+                        "address": responseObject[0].address,
+                        "script": responseObject[0].scriptPubKey,
+                        "amount": responseObject[0].amount
+                    }
+                    
+                    
+                    //Create a new Transaction with the from populated with the utxo object, to populated with the receiver and the Satoshi, change being sent to the sender and signed with the private key
+                    var trans=new dashcore.Transaction().
+                                from(utxo_object).
+                                addData(username).
+                                sign(pk);
+            
+                    // Creating the JSON string that has to be sent via API
+                    var bd='{"rawtx":"'+String(trans)+'","token":"'+token+'"}';
+                    console.log(bd)
+            
+                    // Set the Options that is to be used in the send API call
+                    var options = {
+                        hostname: "api.chainrider.io",
+                        port:443,
+                        path: "/v1/dash/testnet/tx/send",
+                        method: 'POST',
+                        headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+                        //data: bd
+                        };
+            
+                    // Perform the POST API call
+                    const req = https.request(options, res => {
+                            console.log(`statusCode: ${res.statusCode}`)
+                          
+                            res.on('data', d => {
+                              process.stdout.write(d)
+                            
+                              var responseObject1 = JSON.parse(d);
+                              console.log('resp in JSON', responseObject1)
+                              
+                              //Iterate over the vout transactions to identify the total sum
+                              dashTx=responseObject1.txid                        
+                            })
+                          })
+                    // Write the body on the request
+                    req.write(bd)
+                    req.on('error', error => {
+                          console.error(error)
+                    })
+            
+                    req.end()
+                    }
+                });
+              
+              }).on('error', (e) => {
+                console.error(e);
+              });
+
+              let precord = PRecord.createInstance(username, name, dob, gender, blood_type, dashTx);
+
+
+
+
+
+
+        }
+        
         return precord.toBuffer()
     }
 
@@ -135,6 +239,24 @@ class Precordcontract extends Contract {
                     //  IF YES - we call https://www.chainrider.io/docs/dash/#transaction-by-hash API to return a JSON of that transaction
                     //  From the transaction get OP-RETURN data
                     //  Convert the hex value of OP-ReturnData to ASCII and append it to the record as jsonRes.Record['tx_decoded']
+                    url="https://api.chainrider.io/v1/dash/testnet/tx/"+ jsonRes.Record['tx']+"?token="+token;
+                    const req=https.get(url, (res) => {
+                        //This is to get the statusCode and headers
+                                //console.log('statusCode:', res.statusCode);
+                                //console.log('headers:', res.headers);
+                      
+                        //Processing on the response from the get rest api call        
+                        res.on('data', (resp) => {
+                          process.stdout.write(resp);
+                          
+                          //Convert to JSON format
+                          var responseObject = JSON.parse(resp);
+                          console.log('resp in JSON', responseObject)
+
+                          tx_detail=responseObject.
+                        });
+                    });
+
                 }
             } catch (err) {
                 console.log(err);
